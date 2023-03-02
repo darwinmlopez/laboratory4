@@ -102,6 +102,15 @@
                 'attribution': 'Map tiles designed by Darwin López'
             });
 
+            map.addSource('uw_theme-tiles', {
+                'type': 'raster',
+                'tiles': [
+                    'assets/uw_theme/{z}/{x}/{y}.png'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles designed by Darwin López'
+            });
+
             map.addSource('satellite-tiles', {
                 'type': 'raster',
                 'tiles': [
@@ -130,6 +139,15 @@
             });
 
             map.addLayer({
+                'id': 'uw_theme',
+                'type': 'raster',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'source': 'uw_theme-tiles'
+            });
+
+            map.addLayer({
                 'id': 'satellite',
                 'type': 'raster',
                 'layout': {
@@ -143,12 +161,12 @@
     // After the last frame rendered before the map enters an "idle" state.
     map.on('idle', () => {
         // If these two layers were not added to the map, abort
-        if (!map.getLayer('green_lava') || !map.getLayer('public_wifi') || !map.getLayer('satellite')) ;{
+        if (!map.getLayer('green_lava') || !map.getLayer('public_wifi') || !map.getLayer('uw_theme') || !map.getLayer('satellite')) {
             return;
         }
 
         // Enumerate ids of the layers.
-        const toggleableLayerIds = ['green_lava', 'public_wifi', 'satellite'];
+        const toggleableLayerIds = ['green_lava', 'public_wifi', 'uw_theme', 'satellite'];
 
         // Set up the corresponding toggle button for each layer.
         for (const id of toggleableLayerIds) {
