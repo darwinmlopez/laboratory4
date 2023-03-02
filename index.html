@@ -102,6 +102,15 @@
                 'attribution': 'Map tiles designed by Darwin López'
             });
 
+            map.addSource('satellite-tiles', {
+                'type': 'raster',
+                'tiles': [
+                    'assets/satellite/{z}/{x}/{y}.png'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles designed by Darwin López'
+            });
+
             map.addLayer({
                 'id': 'green_lava',
                 'type': 'raster',
@@ -120,79 +129,132 @@
                 'source': 'public_wifi-tiles'
             });
 
+            map.addLayer({
+                'id': 'satellite',
+                'type': 'raster',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'source': 'satellite-tiles'
+            });
+
         });
 
+    // After the last frame rendered before the map enters an "idle" state.
+    map.on('idle', () => {
+        // If these two layers were not added to the map, abort
+        if (!map.getLayer('green_lava') || !map.getLayer('public_wifi') || !map.getLayer('satellite')) ;{
+            return;
+        }
 
-        // After the last frame rendered before the map enters an "idle" state.
-        map.on('idle', () => {
-            // If these two layers were not added to the map, abort
-<<<<<<< HEAD
-            if (!map.getLayer('green_lava') || !map.getLayer('public_wifi')) {
-=======
-            if (!map.getLayer('green_lava') || !map.getLayer('public_wifi')) {
->>>>>>> 37d9eee (commit)
-                return;
+        // Enumerate ids of the layers.
+        const toggleableLayerIds = ['green_lava', 'public_wifi', 'satellite'];
+
+        // Set up the corresponding toggle button for each layer.
+        for (const id of toggleableLayerIds) {
+            // Skip layers that already have a button set up.
+            if (document.getElementById(id)) {
+                continue;
             }
 
-            // Enumerate ids of the layers.
-<<<<<<< HEAD
-            const toggleableLayerIds = ['green_lava', 'public_wifi'];
-=======
-            const toggleableLayerIds = ['green_lava', 'public_wifi'];
->>>>>>> 37d9eee (commit)
+            // Create a link.
+            const link = document.createElement('a');
+            link.id = id;
+            link.href = '#';
+            link.textContent = id;
+            link.className = 'inactive';
 
-            // Set up the corresponding toggle button for each layer.
-            for (const id of toggleableLayerIds) {
-                // Skip layers that already have a button set up.
-                if (document.getElementById(id)) {
-                    continue;
-                }
+            // Show or hide layer when the corresponding toggle button is clicked.
+            link.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-                // Create a link.
-                const link = document.createElement('a');
-                link.id = id;
-                link.href = '#';
-                link.textContent = id;
-                link.className = 'inactive';
+                const clickedLayer = this.textContent;
+                this.className = 'active';
 
-                // Show or hide layer when the toggle is clicked.
-                link.onclick = function (e) {
-                    const clickedLayer = this.textContent;
-                    // preventDefault() tells the user agent that if the event does not get explicitly handled, 
-                    // its default action should not be taken as it normally would be.
-                    e.preventDefault();
-                    // The stopPropagation() method prevents further propagation of the current event in the capturing 
-                    // and bubbling phases. It does not, however, prevent any default behaviors from occurring; 
-                    // for instance, clicks on links are still processed. If you want to stop those behaviors, 
-                    // see the preventDefault() method.
-                    e.stopPropagation();
+                map.setLayoutProperty(clickedLayer, 'visibility',
+                    map.getLayoutProperty(clickedLayer, 'visibility') === 'visible' ? 'none' : 'visible');
+            };
 
-                    const visibility = map.getLayoutProperty(
-                        clickedLayer,
-                        'visibility'
-                    );
-
-                    // Toggle layer visibility by changing the layout object's visibility property.
-                    // if it is currently visible, after the clicking, it will be turned off.
-                    if (visibility === 'visible') {
-                        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                        this.className = '';
-                    } else { //otherise, it will be turned on.
-                        this.className = 'active';
-                        map.setLayoutProperty(
-                            clickedLayer,
-                            'visibility',
-                            'visible'
-                        );
-                    }
-                };
-
-                // in the menu place holder, insert the layer links.
-                const layers = document.getElementById('menu');
-                layers.appendChild(link);
-            }
-        });
+            const layers = document.getElementById('menu');
+            layers.appendChild(link);
+        }
+    });
     </script>
 </body>
 
 </html>
+
+//         // After the last frame rendered before the map enters an "idle" state.
+//         map.on('idle', () => {
+//             // If these two layers were not added to the map, abort
+// <<<<<<< HEAD
+//             if (!map.getLayer('green_lava') || !map.getLayer('public_wifi')) {
+// =======
+//             if (!map.getLayer('green_lava') || !map.getLayer('public_wifi')) {
+// >>>>>>> 37d9eee (commit)
+//                 return;
+//             }
+
+//             // Enumerate ids of the layers.
+// <<<<<<< HEAD
+//             const toggleableLayerIds = ['green_lava', 'public_wifi'];
+// =======
+//             const toggleableLayerIds = ['green_lava', 'public_wifi'];
+// >>>>>>> 37d9eee (commit)
+
+//             // Set up the corresponding toggle button for each layer.
+//             for (const id of toggleableLayerIds) {
+//                 // Skip layers that already have a button set up.
+//                 if (document.getElementById(id)) {
+//                     continue;
+//                 }
+
+//                 // Create a link.
+//                 const link = document.createElement('a');
+//                 link.id = id;
+//                 link.href = '#';
+//                 link.textContent = id;
+//                 link.className = 'inactive';
+
+//                 // Show or hide layer when the toggle is clicked.
+//                 link.onclick = function (e) {
+//                     const clickedLayer = this.textContent;
+//                     // preventDefault() tells the user agent that if the event does not get explicitly handled, 
+//                     // its default action should not be taken as it normally would be.
+//                     e.preventDefault();
+//                     // The stopPropagation() method prevents further propagation of the current event in the capturing 
+//                     // and bubbling phases. It does not, however, prevent any default behaviors from occurring; 
+//                     // for instance, clicks on links are still processed. If you want to stop those behaviors, 
+//                     // see the preventDefault() method.
+//                     e.stopPropagation();
+
+//                     const visibility = map.getLayoutProperty(
+//                         clickedLayer,
+//                         'visibility'
+//                     );
+
+//                     // Toggle layer visibility by changing the layout object's visibility property.
+//                     // if it is currently visible, after the clicking, it will be turned off.
+//                     if (visibility === 'visible') {
+//                         map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+//                         this.className = '';
+//                     } else { //otherise, it will be turned on.
+//                         this.className = 'active';
+//                         map.setLayoutProperty(
+//                             clickedLayer,
+//                             'visibility',
+//                             'visible'
+//                         );
+//                     }
+//                 };
+
+//                 // in the menu place holder, insert the layer links.
+//                 const layers = document.getElementById('menu');
+//                 layers.appendChild(link);
+//             }
+//         });
+//     </script>
+// </body>
+
+// </html>
